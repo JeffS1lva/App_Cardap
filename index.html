@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -212,11 +213,11 @@
     </div>
 
     <div
-      class="bg-black/60 w-full h-full fixed top-0 left-0 z-[99] items-center justify-center hidden"
+      class="bg-black/60 w-full h-full fixed top-0 left-0 z-[99] items-center justify-center hidden" id="cart-modal"
     >
       <div class="bg-white p-5 rounded-md min-w-[90%] md:min-w-[600px]">
         <h2 class="text-center font-bold text-2xl mb-2">Meu carrinho</h2>
-        <div id="card-items" class="flex justify-between mb-2 flex-col"></div>
+        <div id="cart-items" class="flex justify-between mb-2 flex-col"></div>
         <p class="font-bold">Total: <span id="cart-total">0.00</span></p>
 
         <p class="font-bold mt-4">Endereço de entrega</p>
@@ -227,7 +228,7 @@
           type="text"
         />
         <p class="text-red-500 hidden" id="address-warn">
-          Digite seu endereço completo
+          Digite seu endereço completo!
         </p>
 
         <div class="flex items-center justify-between mt-5 w-full">
@@ -253,5 +254,8 @@
         <i class="fa fa-cart-plus text-lg text-white"></i>
       </button>
     </footer>
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="./script.js"></script>
   </body>
 </html>
