@@ -10,62 +10,61 @@ const addressInput = document.getElementById("address")
 const addressWarn = document.getElementById("address-warn")
 
 let cart = [];
-
 cartBtn.addEventListener("click", function () {
- cartModal.style.display = "flex"
- updateCartModal();
+  cartModal.style.display = "flex"
+  updateCartModal();
 })
 
 cartModal.addEventListener("click", function (event) {
- if (event.target === cartModal) {
-  cartModal.style.display = "none"
- }
+  if (event.target === cartModal) {
+    cartModal.style.display = "none"
+  }
 })
 
 closeModalBtn.addEventListener("click", function () {
- cartModal.style.display = "none"
+  cartModal.style.display = "none"
 })
 
 menu.addEventListener("click", function (event) {
- let parentButton = event.target.closest(".add-to-cart-btn")
+  let parentButton = event.target.closest(".add-to-cart-btn")
 
- if (parentButton) {
-  const name = parentButton.getAttribute("data-name")
-  const price = parseFloat(parentButton.getAttribute("data-price"))
+  if (parentButton) {
+    const name = parentButton.getAttribute("data-name")
+    const price = parseFloat(parentButton.getAttribute("data-price"))
 
-  addToCart(name, price)
- }
+    addToCart(name, price)
+  }
 
 })
 
 
 function addToCart(name, price) {
 
- const existingItem = cart.find(item => item.name === name)
+  const existingItem = cart.find(item => item.name === name)
 
- if (existingItem) {
-  existingItem.quantity += 1;
+  if (existingItem) {
+    existingItem.quantity += 1;
 
- } else {
-  cart.push({
-   name,
-   price,
-   quantity: 1,
-  })
- }
+  } else {
+    cart.push({
+      name,
+      price,
+      quantity: 1,
+    })
+  }
 
- updateCartModal()
+  updateCartModal()
 }
 
 function updateCartModal() {
- cartItemsContainer.innerHTML = "";
- let total = 0;
+  cartItemsContainer.innerHTML = "";
+  let total = 0;
 
- cart.forEach(item => {
-  const cartItemElement = document.createElement("div")
-  cartItemElement.classList.add("flex", "justify-between", "b-4", "flex-col")
+  cart.forEach(item => {
+    const cartItemElement = document.createElement("div")
+    cartItemElement.classList.add("flex", "justify-between", "b-4", "flex-col")
 
-  cartItemElement.innerHTML = `
+    cartItemElement.innerHTML = `
    <div class="flex items-center justify-between ">
      <div>
        <p class="font-bold ">${item.name}</p>
@@ -80,109 +79,107 @@ function updateCartModal() {
    </div>
   `
 
-  total += item.price * item.quantity;
+    total += item.price * item.quantity;
 
 
 
-  cartItemsContainer.appendChild(cartItemElement)
- })
+    cartItemsContainer.appendChild(cartItemElement)
+  })
 
- cartTotal.textContent = total.toLocaleString("pt-BR", {
-  style: "currency",
-  currency: "BRL"
- });
+  cartTotal.textContent = total.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+  });
 
- cartCounter.innerText = cart.length;
+  cartCounter.innerText = cart.length;
 }
-
 cartItemsContainer.addEventListener("click", function (event) {
- if(event.target.classList.contains("remove-btn")){
-  const name = event.target.getAttribute("data-name")
+  if (event.target.classList.contains("remove-btn")) {
+    const name = event.target.getAttribute("data-name")
 
-  removeItemCart(name)
- }
+    removeItemCart(name)
+  }
 })
 
 function removeItemCart(name) {
- const index = cart.findIndex(item => item.name === name);
+  const index = cart.findIndex(item => item.name === name);
 
- if(index !== -1) {
-  const item = cart[index];
+  if (index !== -1) {
+    const item = cart[index];
 
-  if(item.quantity > 1) {
-   item.quantity -= 1;
-   updateCartModal();
-   return;
+    if (item.quantity > 1) {
+      item.quantity -= 1;
+      updateCartModal();
+      return;
+    }
+
+    cart.splice(index, 1);
+    updateCartModal()
   }
-
-  cart.splice(index, 1);
-  updateCartModal()
- }
 }
 
-addressInput.addEventListener("input", function(event) {
- let inputValue = event.target.value;
+addressInput.addEventListener("input", function (event) {
+  let inputValue = event.target.value;
 
- if(inputValue !== "") {
-  addressInput.classList.remove("border-red-500");
-  addressWarn.classList.add("hidden")
- }
+  if (inputValue !== "") {
+    addressInput.classList.remove("border-red-500");
+    addressWarn.classList.add("hidden")
+  }
 })
 
-checkoutBtn.addEventListener("click", function() {
- const isOpen = checkRestaurantOpen();
- if(!isOpen) {
-  Toastify({
-   text: "Ops, o restaurante está fechado!",
-  duration: 3000,
-  close: true,
-  gravity: "top", 
-  position: "right", 
-  stopOnFocus: true, 
-  style: {
-    background: "#ef4444",
-  },
-  }).showToast()
-  return;
- }
+checkoutBtn.addEventListener("click", function () {
+  const isOpen = checkRestaurantOpen();
+  if (!isOpen) {
+    Toastify({
+      text: "Ops, o restaurante está fechado!",
+      duration: 3000,
+      close: true,
+      gravity: "top",
+      position: "right",
+      stopOnFocus: true,
+      style: {
+        background: "#ef4444",
+      },
+    }).showToast()
+    return;
+  }
 
- if(cart.length === 0) return;
+  if (cart.length === 0) return;
+  if (addressInput.value === "") {
+    addressWarn.classList.remove("hidden")
+    addressInput.classList.add("border-red-500")
+    return;
+  }
 
- if(addressInput.value === "") {
-  addressWarn.classList.remove("hidden")
-  addressInput.classList.add("border-red-500")
-  return;
- }
+  const cartItems = cart.map((item) => {
+    return (
+      ` ${item.name} Quantidade: (${item.quantity}) Preço: R$ ${item.price} |`
+    )
+  }).join("")
 
- const cartItems = cart.map((item) => {
-  return(
-   ` ${item.name} Quantidade: (${item.quantity}) Preço: R$ ${item.price} |`
-  )
- }).join("")
- 
- const message = encodeURIComponent(cartItems)
- const phone = "11914675286"
+  const message = encodeURIComponent(cartItems)
+  const phone = "914675286"
 
- window.open(`https://wa.me/${phone}?text=${message} Endereço: ${addressInput.value}`, "_blank")
+  window.open(`https://wa.me/${phone}?text=${message} Endereço: ${addressInput.value}`, "_blank")
 
- cart = [];
- updateCartModal()
+  cart = [];
+  updateCartModal()
 })
 
 function checkRestaurantOpen() {
- const data = new Date();
- const hora = data.getHours();
- return hora >= 18 && hora < 22;
+  const data = new Date();
+  const hora = data.getHours();
+  return hora >= 18 && hora < 22;
 }
 
 const spanItem = document.getElementById("date-span")
 const isOpen = checkRestaurantOpen();
 
-if(isOpen) {
- spanItem.classList.remove("bg-red-500")
- spanItem.classList.add("bg-green-500")
+if (isOpen) {
+  spanItem.classList.remove("bg-red-500")
+  spanItem.classList.add("bg-green-500")
 } else {
- spanItem.classList.remove("bg-green-500")
- spanItem.classList.add("bg-red-500")
+  spanItem.classList.remove("bg-green-500")
+  spanItem.classList.add("bg-red-500")
 }
 
